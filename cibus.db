@@ -1,0 +1,80 @@
+--
+-- File generated with SQLiteStudio v3.2.1 on Sun Feb 7 19:17:18 2021
+--
+-- Text encoding used: System
+--
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+-- Table: Account
+CREATE TABLE Account (accountId INTEGER PRIMARY KEY UNIQUE, accountRoleId INTEGER REFERENCES Account_RoleId (accountRoleId), accountScreenName VARCHAR (30), firstName VARCHAR (50), lastName VARCHAR (50), age VARCHAR (5), email VARCHAR (50), phoneNumber VARCHAR (10), streetAddress VARCHAR (150), accountTierChoice VARCHAR (10));
+INSERT INTO Account (accountId, accountRoleId, accountScreenName, firstName, lastName, age, email, phoneNumber, streetAddress, accountTierChoice) VALUES (1, 1, 'Greg''s potato', 'Gregory', 'Williams', '23', 'gregpotat@gmail.com', '7896541235', '8545 N Richmond', 'Premium');
+INSERT INTO Account (accountId, accountRoleId, accountScreenName, firstName, lastName, age, email, phoneNumber, streetAddress, accountTierChoice) VALUES (2, 2, 'Stacy_D', 'Stacy', 'Daniels', '56', 'stacyD@yahoo.com', '4563218756', '4568 W Oak Drive', 'Free');
+INSERT INTO Account (accountId, accountRoleId, accountScreenName, firstName, lastName, age, email, phoneNumber, streetAddress, accountTierChoice) VALUES (3, 3, 'Stardew Valley', 'Junimo', 'Kart', '32', 'stardrop@outlook.com', '1236547453', '856 Valley Ave', 'Premium');
+INSERT INTO Account (accountId, accountRoleId, accountScreenName, firstName, lastName, age, email, phoneNumber, streetAddress, accountTierChoice) VALUES (4, 4, 'Jason_H', 'Jason', 'Holiday', '36', 'holiday@gmail.com', '123456843', '456 Mango St', 'Basic');
+
+-- Table: Account_Ingredient
+CREATE TABLE Account_Ingredient (accountIngredientId INTEGER PRIMARY KEY UNIQUE, ingredient_Id INTEGER REFERENCES Ingredient (ingredientId), account_Id INTEGER REFERENCES Account (accountId));
+INSERT INTO Account_Ingredient (accountIngredientId, ingredient_Id, account_Id) VALUES (1, 1, 3);
+INSERT INTO Account_Ingredient (accountIngredientId, ingredient_Id, account_Id) VALUES (2, 2, 1);
+INSERT INTO Account_Ingredient (accountIngredientId, ingredient_Id, account_Id) VALUES (3, 3, 1);
+
+-- Table: Account_InventoryLU
+CREATE TABLE Account_InventoryLU (accountLId INTEGER PRIMARY KEY UNIQUE, account_Id INTEGER REFERENCES Account (accountId), inventory_Id INTEGER REFERENCES InventoryLookup (inventoryId));
+
+-- Table: Account_Menu
+CREATE TABLE Account_Menu (accountMenuId INTEGER PRIMARY KEY UNIQUE, menu_Id INT, account_Id INTEGER);
+
+-- Table: Account_Recipe
+CREATE TABLE Account_Recipe (accountRecipeId INTEGER PRIMARY KEY UNIQUE, account_Id INTEGER REFERENCES Account (accountId), recipe_Id INTEGER REFERENCES Recipe (recipeId));
+
+-- Table: Account_RoleId
+CREATE TABLE Account_RoleId (accountRoleId INTEGER PRIMARY KEY UNIQUE, account_Id INTEGER REFERENCES Account (accountId), accountTypeId INTEGER REFERENCES AccountRoleType (accountTypeId));
+INSERT INTO Account_RoleId (accountRoleId, account_Id, accountTypeId) VALUES (1, 1, 3);
+INSERT INTO Account_RoleId (accountRoleId, account_Id, accountTypeId) VALUES (2, 2, 1);
+INSERT INTO Account_RoleId (accountRoleId, account_Id, accountTypeId) VALUES (3, 3, 3);
+INSERT INTO Account_RoleId (accountRoleId, account_Id, accountTypeId) VALUES (4, 4, 2);
+
+-- Table: AccountRoleType
+CREATE TABLE AccountRoleType (accountTypeId INTEGER PRIMARY KEY NOT NULL, accountType VARCHAR (15));
+INSERT INTO AccountRoleType (accountTypeId, accountType) VALUES (1, 'Customer');
+INSERT INTO AccountRoleType (accountTypeId, accountType) VALUES (2, 'Administrator');
+INSERT INTO AccountRoleType (accountTypeId, accountType) VALUES (3, 'Vendor');
+
+-- Table: CalendarMenu
+CREATE TABLE CalendarMenu (menuId INTEGER PRIMARY KEY UNIQUE NOT NULL, recipeId INTEGER REFERENCES Recipe (recipeId), dayOfWeek VARCHAR (10), mealType VARCHAR (15), menuTitle VARCHAR (30));
+INSERT INTO CalendarMenu (menuId, recipeId, dayOfWeek, mealType, menuTitle) VALUES (1, NULL, 'Monday', NULL, NULL);
+INSERT INTO CalendarMenu (menuId, recipeId, dayOfWeek, mealType, menuTitle) VALUES (2, NULL, 'Tuesday', NULL, NULL);
+INSERT INTO CalendarMenu (menuId, recipeId, dayOfWeek, mealType, menuTitle) VALUES (3, NULL, 'Wednesday', NULL, NULL);
+INSERT INTO CalendarMenu (menuId, recipeId, dayOfWeek, mealType, menuTitle) VALUES (4, NULL, 'Thursday', NULL, NULL);
+INSERT INTO CalendarMenu (menuId, recipeId, dayOfWeek, mealType, menuTitle) VALUES (5, NULL, 'Friday', NULL, NULL);
+INSERT INTO CalendarMenu (menuId, recipeId, dayOfWeek, mealType, menuTitle) VALUES (6, NULL, 'Saturday', NULL, NULL);
+INSERT INTO CalendarMenu (menuId, recipeId, dayOfWeek, mealType, menuTitle) VALUES (7, NULL, 'Sunday', NULL, NULL);
+
+-- Table: Ingredient
+CREATE TABLE Ingredient (ingredientId INTEGER PRIMARY KEY NOT NULL UNIQUE, ingredientName VARCHAR (50) UNIQUE, qtyAvailable INTEGER, ingredientCategory VARCHAR (30), ingredientServingSize INTEGER, starIngredient VARCHAR (75), ingredientDescription VARCHAR (150));
+INSERT INTO Ingredient (ingredientId, ingredientName, qtyAvailable, ingredientCategory, ingredientServingSize, starIngredient, ingredientDescription) VALUES (1, 'Acovado', 2, 'Fruit', 2, NULL, NULL);
+INSERT INTO Ingredient (ingredientId, ingredientName, qtyAvailable, ingredientCategory, ingredientServingSize, starIngredient, ingredientDescription) VALUES (2, 'Pepper', 3, 'Condiment', 1, NULL, NULL);
+INSERT INTO Ingredient (ingredientId, ingredientName, qtyAvailable, ingredientCategory, ingredientServingSize, starIngredient, ingredientDescription) VALUES (3, 'Bread', 6, 'Grains', 2, NULL, NULL);
+
+-- Table: Ingredient_Inventory
+CREATE TABLE Ingredient_Inventory (ingredientInventory PRIMARY KEY UNIQUE, ingredient_Id INTEGER REFERENCES Ingredient (ingredientId), inventory_Id INTEGER REFERENCES InventoryLookup (inventoryId));
+
+-- Table: InventoryLookup
+CREATE TABLE InventoryLookup (inventoryId INTEGER PRIMARY KEY UNIQUE NOT NULL, inventoryTitle VARCHAR (75), inventoryStatus VARCHAR (10), inventoryMarketStamp DATE);
+
+-- Table: Recipe
+CREATE TABLE Recipe (recipeId INTEGER PRIMARY KEY, recipeTitle VARCHAR (255), recipeInstruction VARCHAR (500), defaultServingSize INTEGER, adjPortionSize INTEGER, alternativeRecipe VARCHAR (75), faveRecipe VARCHAR (5));
+INSERT INTO Recipe (recipeId, recipeTitle, recipeInstruction, defaultServingSize, adjPortionSize, alternativeRecipe, faveRecipe) VALUES (1, 'Avocado Toast', 'Toast Bread. Cut avocado in slices then place on bread. Then add pepper on top.', 1, 'No', 'No', 'Yes');
+
+-- Table: Recipe_Ingredients
+CREATE TABLE Recipe_Ingredients (recipeIngredientId INTEGER PRIMARY KEY UNIQUE, recipe_Id INTEGER REFERENCES Recipe (recipeId), ingredient_Id INTEGER REFERENCES Ingredient (ingredientId));
+INSERT INTO Recipe_Ingredients (recipeIngredientId, recipe_Id, ingredient_Id) VALUES (1, 1, 1);
+INSERT INTO Recipe_Ingredients (recipeIngredientId, recipe_Id, ingredient_Id) VALUES (2, 1, 2);
+INSERT INTO Recipe_Ingredients (recipeIngredientId, recipe_Id, ingredient_Id) VALUES (3, 1, 3);
+
+-- View: InventoryLookupView
+CREATE VIEW InventoryLookupView AS SELECT i.ingredientName, i.qtyAvailable, a.accountScreenName, a.phoneNumber, a.streetAddress FROM ingredient i , Account a;
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;
